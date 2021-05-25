@@ -8,13 +8,18 @@ namespace FormeleMethodenEindproject
     class DFAbuilder
     {
         private char[] alphabet;
+        private string alphabet_as_string; // in case of extra functionality
         private List<Node> nodes; 
         private List<Transition> transitions;
         
 
-        
+        /// <summary>
+        /// DFAbuilder requires an alphabet to which node interactions will be checked against
+        /// </summary>
+        /// <param name="alphabet"></param>
         public DFAbuilder(string alphabet)
         {
+            this.alphabet_as_string = alphabet;
             this.alphabet = alphabet.ToCharArray();
             this.nodes = new List<Node>();
             this.transitions = new List<Transition>();
