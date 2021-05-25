@@ -21,5 +21,16 @@ namespace FormeleMethodenEindproject
         public char[] Alphabet { get => alphabet; }
         internal List<Node> Nodes { get => nodes; }
         internal List<Transition> Transitions { get => transitions; }
+
+        /// <summary>
+        /// prints useful information about the contents of the DFA.
+        /// contents consist of: alphabet string, amount of nodes and amount of transitions.
+        /// </summary>
+        public override string ToString() {
+            string tmp_a = new string(this.alphabet);
+            return string.Format("Alphabet: {0}\nNodes amount: {1}\nTransitions amount: {2}\n", tmp_a, this.nodes.Count, this.transitions.Count);
+        }
     }
+
+
 }

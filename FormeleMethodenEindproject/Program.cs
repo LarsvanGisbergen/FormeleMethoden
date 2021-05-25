@@ -13,12 +13,15 @@ namespace FormeleMethodenEindproject
             builder.addNode(false, true, 2);
 
 
+
+            //example regex: ab*a
             builder.addTransition(0, 1, 'a');
             builder.addTransition(1, 1, 'b');
-            builder.addTransition(1, 2, 'd');
-            builder.addTransition(4, 3, 'c');
+            builder.addTransition(1, 2, 'a');
 
-            Console.WriteLine(builder.getTransitionsSize());
+            DFA dfa = builder.createDFA();
+
+            Console.WriteLine(dfa);
         }
     }
 }
