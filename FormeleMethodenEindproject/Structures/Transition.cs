@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FormeleMethodenEindproject
 {
-    class Transition
+    public class Transition
     {
         private int origin;
         private int dest;

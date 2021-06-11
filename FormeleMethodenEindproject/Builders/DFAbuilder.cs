@@ -5,13 +5,16 @@ using System.Text;
 
 namespace FormeleMethodenEindproject
 {
-    class DFAbuilder
+    public class DFAbuilder
     {
         private char[] alphabet;
         private string alphabet_as_string; // in case of extra functionality
         private List<Node> nodes; 
         private List<Transition> transitions;
-        
+        private int lastNodeID;
+
+
+        public int LastNodeID { get => lastNodeID; }
 
         /// <summary>
         /// DFAbuilder requires an alphabet to which node interactions will be checked against
@@ -23,6 +26,7 @@ namespace FormeleMethodenEindproject
             this.alphabet = alphabet.ToCharArray();
             this.nodes = new List<Node>();
             this.transitions = new List<Transition>();
+            this.lastNodeID = -1; //-1 means it has not yet been initialized, will be set to >0 when addNode() is called.
         }
 
         public bool addNode(bool begin, bool end, int id)
@@ -35,6 +39,7 @@ namespace FormeleMethodenEindproject
                 }
             }
             nodes.Add(new Node(begin,end,id));
+            this.lastNodeID++;
             return true;
         }
 
@@ -64,6 +69,12 @@ namespace FormeleMethodenEindproject
         {
             return new DFA(this.alphabet, this.nodes, this.transitions);
         }
+
+        public DFA createBasicDFA()
+        {
+            this.lastNodeID = 1;
+            return new DFA(this.alphabet, new List<Node>() { new Node(true, false, 0), new Node(false,true,1) }, new List<Transition>() {new Transition(0,1,'-') });
+        }
         public int getTransitionsSize()
         {
             return this.transitions.Count;
@@ -73,5 +84,17 @@ namespace FormeleMethodenEindproject
             string builderString = "Alphabet: " + this.alphabet + "\nNodes: " + this.nodes + "\nTransitions: " + this.transitions;
             return builderString;
         }
+
+        public void printTransitionStructure()
+        {
+            Console.WriteLine("transitions:");
+            foreach (Transition t in this.transitions)
+            {
+                Console.WriteLine("from: " + t.Origin + " to: " + t.Dest + " terminal: " + t.Symbol);
+            }
+
+        }
+
+        
     }
 }

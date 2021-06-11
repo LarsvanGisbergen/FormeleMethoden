@@ -1,6 +1,7 @@
 ﻿using FormeleMethodenEindproject.RegularExpression;
 using System;
 using System.Collections.Generic;
+using FormeleMethodenEindproject.Converters;
 
 namespace FormeleMethodenEindproject
 {
@@ -26,18 +27,30 @@ namespace FormeleMethodenEindproject
 
             //Console.WriteLine(dfa);
 
-            //regex used: ab*
+            //regex used: abba
 
             Regex r1 = new Regex('a');
-            Regex r2 = new Regex('b').star();
-            Regex r3 = r1.dot(r2);
+            Regex r2 = new Regex('b');
+            Regex r3 = new Regex('b');
+            Regex r4 = new Regex('a');
+            Regex r5 = r1.dot(r2);
+            Regex r6 = r5.dot(r3);
+            Regex r7 = r6.dot(r4);
 
-            SortedSet<string> language = RegexLogic.regexToLanguage(r3, 5);
-            foreach (string word in language)
-            {
-                Console.WriteLine(word);
-            }
-            Console.WriteLine("Language size: " + language.Count);
+            RegexToNFAConverter rnc = new RegexToNFAConverter();
+            DFAbuilder db = rnc.RegexToNFA(r7);
+            db.printTransitionStructure();
+            
+
+            //SortedSet<string> language = RegexLogic.regexToLanguage(r4, 5);
+            //foreach (string word in language)
+            //{
+            //    Console.WriteLine(word);
+            //}
+            //Console.WriteLine("Language size: " + language.Count);
+
+
+
         }
     }
 }
