@@ -5,7 +5,7 @@ using System.Text;
 namespace FormeleMethodenEindproject
 {
     
-    class Node
+    public class Node
     {
         private bool begin;
         private bool end;

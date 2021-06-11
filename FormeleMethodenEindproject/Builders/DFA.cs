@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FormeleMethodenEindproject
 {
-    class DFA
+    public class DFA
     {
 
         private char[] alphabet;
