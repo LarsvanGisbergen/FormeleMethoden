@@ -27,18 +27,22 @@ namespace FormeleMethodenEindproject
 
             //Console.WriteLine(dfa);
 
-            //regex used: abba
-
+            //regex used: (a|b)(b|a)
+            Regex r0 = new Regex('a');
             Regex r1 = new Regex('a');
             Regex r2 = new Regex('b');
             Regex r3 = new Regex('b');
             Regex r4 = new Regex('a');
-            Regex r5 = r1.dot(r2);
-            Regex r6 = r5.dot(r3);
-            Regex r7 = r6.dot(r4);
+
+            Regex r01 = r0.or(r1);
+
+            Regex r12 = r1.dot(r2);
+            Regex r34 = r3.dot(r4);
+            Regex r1234 = r12.or(r34);
+            Regex r01234 = r0.or(r1234);
 
             RegexToNFAConverter rnc = new RegexToNFAConverter();
-            DFAbuilder db = rnc.RegexToNFA(r7);
+            DFAbuilder db = rnc.RegexToNFA(r01234);
             db.printTransitionStructure();
             
 

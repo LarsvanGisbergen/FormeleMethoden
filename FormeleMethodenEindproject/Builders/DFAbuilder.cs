@@ -92,7 +92,13 @@ namespace FormeleMethodenEindproject
             {
                 Console.WriteLine("from: " + t.Origin + " to: " + t.Dest + " terminal: " + t.Symbol);
             }
+            Console.WriteLine("");
 
+            Console.WriteLine("nodes:");
+            foreach (Node n in this.nodes)
+            {
+                Console.WriteLine("begin: " + n.Begin + " end: " + n.End + " id: " + n.Id);
+            }
         }
 
         

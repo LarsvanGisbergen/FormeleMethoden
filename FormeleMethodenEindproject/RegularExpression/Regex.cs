@@ -69,6 +69,8 @@ namespace FormeleMethodenEindproject.RegularExpression
             result.left = this;
             return result;
         }
+
+
     }
 
 
