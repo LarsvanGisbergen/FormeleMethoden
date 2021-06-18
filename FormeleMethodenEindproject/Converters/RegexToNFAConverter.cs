@@ -41,15 +41,23 @@ namespace FormeleMethodenEindproject.Converters
                     break;
 
                 case Regex.Operator.OR:
-                    int tmp = _dfabuilder.LastNodeID;
+                    int tmp = _dfabuilder.LastNodeID; // 0
                     Console.WriteLine("tmp: " + tmp);
                     RegexToNFARecursive(regex.left);
-                    int x = _dfabuilder.LastNodeID;
+                    if (regex.left.op == Regex.Operator.ONE) {
+                        this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1);
+                        _dfabuilder.addTransition(_dfabuilder.LastNodeID -1, _dfabuilder.LastNodeID, regex.left.terminal);
+                    }
+                    int x = _dfabuilder.LastNodeID; // 1
                     Console.WriteLine("x: " + x);
                     RegexToNFARecursive(regex.right);
-                    int y = _dfabuilder.LastNodeID;
+                    if (regex.right.op == Regex.Operator.ONE)
+                    {
+                        this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1);
+                        _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, regex.right.terminal);
+                    }
+                    int y = _dfabuilder.LastNodeID; // 2
                     Console.WriteLine("y: " + y);
-
                     
                     _dfabuilder.addTransition(tmp, tmp + 1, 'e');
                     _dfabuilder.addTransition(tmp, x + 1, 'e');

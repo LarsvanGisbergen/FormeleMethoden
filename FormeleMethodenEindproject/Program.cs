@@ -34,24 +34,27 @@ namespace FormeleMethodenEindproject
             Regex r3 = new Regex('b');
             Regex r4 = new Regex('a');
 
-            Regex r01 = r0.or(r1);
+            Regex r02 = r0.or(r2);
 
             Regex r12 = r1.dot(r2);
+
+            Regex r123 = r12.or(r3);
+
             Regex r34 = r3.dot(r4);
             Regex r1234 = r12.or(r34);
             Regex r01234 = r0.or(r1234);
 
             RegexToNFAConverter rnc = new RegexToNFAConverter();
-            DFAbuilder db = rnc.RegexToNFA(r01234);
+            DFAbuilder db = rnc.RegexToNFA(r123);
             db.printTransitionStructure();
-            
 
-            //SortedSet<string> language = RegexLogic.regexToLanguage(r4, 5);
-            //foreach (string word in language)
-            //{
-            //    Console.WriteLine(word);
-            //}
-            //Console.WriteLine("Language size: " + language.Count);
+
+            SortedSet<string> language = RegexLogic.regexToLanguage(r123, 5);
+            foreach (string word in language)
+            {
+                Console.WriteLine(word);
+            }
+            Console.WriteLine("Language size: " + language.Count);
 
 
 
