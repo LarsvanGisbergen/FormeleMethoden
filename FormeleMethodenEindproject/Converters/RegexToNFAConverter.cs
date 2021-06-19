@@ -26,9 +26,18 @@ namespace FormeleMethodenEindproject.Converters
         public DFAbuilder RegexToNFA(Regex regex)
         {
             resetDFABuilder();
-            RegexToNFARecursive(regex);
+            if (regex.op == Regex.Operator.ONE)
+            {
+                this._dfabuilder.addNode(false, false, this._dfabuilder.LastNodeID + 1);
+                this._dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, regex.terminal);
+            }
+            else
+            {
+                RegexToNFARecursive(regex);
+            }
             this._dfabuilder.addNode(false, true, this._dfabuilder.LastNodeID + 1);
             this._dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, 'e');
+            
             return this._dfabuilder;
         }
         private void RegexToNFARecursive(Regex regex)
@@ -98,9 +107,41 @@ namespace FormeleMethodenEindproject.Converters
                     break;
 
                 case Regex.Operator.STAR:
+                    int st0 = _dfabuilder.LastNodeID; // 0
+                    Console.WriteLine("st0: " +  st0);
+                    RegexToNFARecursive(regex.left);
+                    if (regex.left.op == Regex.Operator.ONE)
+                    {
+                        this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1);
+                        _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, regex.left.terminal);
+                    }
+                    int st1 = _dfabuilder.LastNodeID; // 4
+                    Console.WriteLine("st1: " + st1);
+
+                    _dfabuilder.addTransition(st0, st0 + 1, 'e'); // Add epsilon transition in the beginning
+                    _dfabuilder.addTransition(st1, st0, 'e'); // Add epsilon transition back for star
+                    this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1); // create end node
+                    _dfabuilder.addTransition(_dfabuilder.LastNodeID -1, _dfabuilder.LastNodeID, 'e'); //Add epsilon transition from latest recursive to last star node
+                    _dfabuilder.addTransition(st0, _dfabuilder.LastNodeID, 'e'); //Add epsilon transition from first node to end node to skip star
+
                     break;
 
                 case Regex.Operator.PLUS:
+                    int pt0 = _dfabuilder.LastNodeID; // 0
+                    Console.WriteLine("st0: " + pt0);
+                    RegexToNFARecursive(regex.left);
+                    if (regex.left.op == Regex.Operator.ONE)
+                    {
+                        this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1);
+                        _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, regex.left.terminal);
+                    }
+                    int pt1 = _dfabuilder.LastNodeID; // 4
+                    Console.WriteLine("st1: " + pt1);
+
+                    _dfabuilder.addTransition(pt0, pt0 + 1, 'e'); // Add epsilon transition in the beginning
+                    _dfabuilder.addTransition(pt1, pt0, 'e'); // Add epsilon transition back for plus
+                    this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1); // create end node
+                    _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, 'e'); //Add epsilon transition from latest recursive to last plus node
                     break;
 
                 default:

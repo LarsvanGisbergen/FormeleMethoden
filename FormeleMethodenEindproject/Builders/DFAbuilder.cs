@@ -52,13 +52,17 @@ namespace FormeleMethodenEindproject
 
             bool found_or = false;
             bool found_dest = false;
+            bool exists = false;
             foreach (Node node in nodes)
             {
 
                 if (node.Id == origin) { found_or = true; };
                 if (node.Id == dest) { found_dest = true; };
             }
-            if (found_or && found_dest) {
+            foreach (Transition transition in transitions) {
+                if (transition.Origin == origin && transition.Dest == dest && transition.Symbol == symbol) { exists = true; };            
+            }
+            if (found_or && found_dest && !exists) {
                 transitions.Add(new Transition(origin, dest, symbol));
                 return true;
             }
