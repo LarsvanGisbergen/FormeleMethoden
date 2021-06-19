@@ -43,7 +43,7 @@ namespace FormeleMethodenEindproject
             RegexToNFAConverter rnc = new RegexToNFAConverter();
             DFAbuilder db = rnc.RegexToNFA(final);
             //db.printTransitionStructure();
-            Console.WriteLine("Word accepted: " + db.acceptWord("ababbba"));
+            Console.WriteLine("Word accepted: " + db.acceptWord("abba"));
             //SortedSet<string> language = RegexLogic.regexToLanguage(final, 5);
             //foreach (string word in language)
             //{
@@ -51,9 +51,38 @@ namespace FormeleMethodenEindproject
             //}
             //Console.WriteLine("Language size: " + language.Count);
 
-            Graphbuilder g = new Graphbuilder(db.createDFA());
-            await g.createGraph();
+            //Graphbuilder g = new Graphbuilder(db.createDFA());
+            //await g.createGraph();
 
+
+            //generate whole language from alphabet
+            Console.WriteLine("All possible words:");
+            IEnumerable<string> words = RegexLogic.generateFullLanguage("ab", 5);
+            printStrings(words);
+            
+
+            //generate all valid words from alphabet and regex
+            Console.WriteLine("All valid words:");
+            IEnumerable<string> validWords = RegexLogic.regexToLanguage(final, 5);
+            printStrings(validWords);
+            
+
+            //generate all nonvalid words from alphabet and regex
+            IEnumerable<string> nonValidWords = RegexLogic.generateNonValidWords(final, "ab", 5);
+            Console.WriteLine("All non-valid words:");
+            printStrings(nonValidWords);
+            
+        }   
+
+        private static void printStrings(IEnumerable<string> strings)
+        {          
+            foreach (var item in strings)
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine("\n");
         }
     }
 }
+
+
