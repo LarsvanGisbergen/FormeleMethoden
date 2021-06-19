@@ -19,6 +19,7 @@ namespace FormeleMethodenEindproject.Graphviz
 
         public async Task createGraph()
         {
+            //Console.WriteLine(directory);
             List<string> lines = new List<string>(); 
             lines.Add("digraph id {\nrankdir=LR;");
 
