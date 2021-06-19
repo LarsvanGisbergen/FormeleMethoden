@@ -5,12 +5,13 @@ using FormeleMethodenEindproject.Converters;
 using FormeleMethodenEindproject.Graphviz;
 using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace FormeleMethodenEindproject
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static public void Main(string[] args)
         {
             //DFAbuilder builder = new DFAbuilder("ab");
 
@@ -35,15 +36,21 @@ namespace FormeleMethodenEindproject
             Regex b = new Regex('b');
             Regex ab = a.dot(b);
             Regex ba = b.dot(a);
-            Regex abplusba = (ab.plus()).dot(ba);
+            Regex aborba = ab.or(ba);
 
-            Regex complex = abplusba;
-            Regex final = complex;
+            Regex final = aborba;
 
+            //Regex to NFA
             RegexToNFAConverter rnc = new RegexToNFAConverter();
             DFAbuilder db = rnc.RegexToNFA(final);
             //db.printTransitionStructure();
             Console.WriteLine("Word accepted: " + db.acceptWord("abba"));
+
+            //NFA to DFA
+            //NFAToDFAConverter nfac = new NFAToDFAConverter("ab", db);
+            //nfac.NFAToDFA();
+
+            //db.printTransitionStructure();
             //SortedSet<string> language = RegexLogic.regexToLanguage(final, 5);
             //foreach (string word in language)
             //{
@@ -51,6 +58,7 @@ namespace FormeleMethodenEindproject
             //}
             //Console.WriteLine("Language size: " + language.Count);
 
+            //Generate graph
             //Graphbuilder g = new Graphbuilder(db.createDFA());
             //await g.createGraph();
 
@@ -75,12 +83,12 @@ namespace FormeleMethodenEindproject
         }   
 
         private static void printStrings(IEnumerable<string> strings)
-        {          
+        {
             foreach (var item in strings)
             {
                 Console.WriteLine(item);
             }
-            Console.WriteLine("\n");
+            Console.WriteLine("Amount of words: " + strings.Count() + "\n");
         }
     }
 }

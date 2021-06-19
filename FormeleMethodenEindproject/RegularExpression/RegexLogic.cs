@@ -22,7 +22,7 @@ namespace FormeleMethodenEindproject.RegularExpression
             SortedSet<string> languageResult = new SortedSet<string>();
             SortedSet<string> languageLeft, languageRight;
 
-            Console.WriteLine("maxlen: " + maxLen);
+            //Console.WriteLine("maxlen: " + maxLen);
             if (maxLen < 1)
             {
                 return emptyLanguage;

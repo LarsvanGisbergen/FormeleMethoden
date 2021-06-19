@@ -32,7 +32,7 @@ namespace FormeleMethodenEindproject.Graphviz
                 }
                 if (node.End) { line += "[shape=doublecircle]"; }
 
-               //Console.WriteLine("node\nid: " + node.Id +  " begin: "+ node.Begin + " end: " + node.End);
+                //Console.WriteLine("node\nid: " + node.Id +  " begin: "+ node.Begin + " end: " + node.End);
                 lines.Add(line);
             });
 
