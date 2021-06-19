@@ -2,12 +2,15 @@
 using System;
 using System.Collections.Generic;
 using FormeleMethodenEindproject.Converters;
+using FormeleMethodenEindproject.Graphviz;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace FormeleMethodenEindproject
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //DFAbuilder builder = new DFAbuilder("ab");
 
@@ -28,35 +31,29 @@ namespace FormeleMethodenEindproject
             //Console.WriteLine(dfa);
 
             //regex used: (a|b)(b|a)
-            Regex r0 = new Regex('a');
-            Regex r1 = new Regex('a');
-            Regex r2 = new Regex('b');
-            Regex r3 = new Regex('b');
-            Regex r4 = new Regex('a');
+            Regex a = new Regex('a');
+            Regex b = new Regex('b');
 
-            Regex r02 = r0.or(r2);
+            Regex ab = a.dot(b);
+            Regex bora = b.or(a);
+            Regex borastar = bora.star();
+            Regex boraplus = bora.plus();
 
-            Regex r12 = r1.dot(r2);
-
-            Regex r123 = r12.or(r3);
-
-            Regex r34 = r3.dot(r4);
-            Regex r1234 = r12.or(r34);
-            Regex r01234 = r0.or(r1234);
+            Regex final = boraplus;
 
             RegexToNFAConverter rnc = new RegexToNFAConverter();
-            DFAbuilder db = rnc.RegexToNFA(r123);
+            DFAbuilder db = rnc.RegexToNFA(final);
             db.printTransitionStructure();
 
+            //SortedSet<string> language = RegexLogic.regexToLanguage(final, 5);
+            //foreach (string word in language)
+            //{
+            //    Console.WriteLine(word);
+            //}
+            //Console.WriteLine("Language size: " + language.Count);
 
-            SortedSet<string> language = RegexLogic.regexToLanguage(r123, 5);
-            foreach (string word in language)
-            {
-                Console.WriteLine(word);
-            }
-            Console.WriteLine("Language size: " + language.Count);
-
-
+            Graphbuilder g = new Graphbuilder(db.createDFA());
+            await g.createGraph();
 
         }
     }
