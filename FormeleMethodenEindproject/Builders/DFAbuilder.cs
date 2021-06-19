@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace FormeleMethodenEindproject
 {
@@ -57,7 +58,6 @@ namespace FormeleMethodenEindproject
             bool exists = false;
             foreach (Node node in nodes)
             {
-
                 if (node.Id == origin) { found_or = true; };
                 if (node.Id == dest) { found_dest = true; };
             }
@@ -69,6 +69,10 @@ namespace FormeleMethodenEindproject
                 return true;
             }
             return false;
+        }
+
+        public void deleteTransition(int origin, int dest, char symbol) {
+            this.transitions.RemoveAll(x => (x.Origin == origin && x.Dest == dest && x.Symbol.Equals(symbol)));
         }
 
         public DFA createDFA()
@@ -153,9 +157,16 @@ namespace FormeleMethodenEindproject
             }
                       
         }
-        
-        
+        public int getTransitionsSize()
+        {
+            return this.transitions.Count;
+        }
 
+        /// <summary>
+        /// This method returns all the transitions from the nfa that have the same origin as the parameter
+        /// </summary>
+        /// <param name="origin"></param> This is the origin paramater to find the list items
+        /// <returns></returns> List of transitions
         public List<Transition> getTransitionsFromOrigin(int origin)
         {
             return transitions.FindAll(t =>
@@ -163,9 +174,20 @@ namespace FormeleMethodenEindproject
                 return t.Origin == origin;
             });
         }
-        public int getTransitionsSize()
-        {
-            return this.transitions.Count;
+
+        public List<Node> getNodes() {
+            return nodes;
+        }
+
+        public Node getNodeFromId(int id) {
+            return nodes.Find(n =>
+            {
+                return n.Id == id;
+            });
+        }
+
+        public char[] getAlphabet() {
+            return alphabet;
         }
         public override string ToString()
         {
@@ -183,14 +205,6 @@ namespace FormeleMethodenEindproject
                 }
             }
             return false;
-        }
-
-        public Node getNodeFromId(int id)
-        {
-            return nodes.Find(n =>
-            {
-                return n.Id == id;
-            });
         }
 
         public void printTransitionStructure()
