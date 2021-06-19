@@ -8,7 +8,7 @@ namespace FormeleMethodenEindproject.Graphviz
 {
     class Graphbuilder
     {
-        private readonly string directory = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Data\graph.dot"));
+        private readonly string directory = "D://graphvizdiagram/graph.dot";
 
         private DFA dfa;
 
@@ -19,7 +19,7 @@ namespace FormeleMethodenEindproject.Graphviz
 
         public async Task createGraph()
         {
-
+            Console.WriteLine(directory);
             List<string> lines = new List<string>(); 
             lines.Add("digraph id {\nrankdir=LR;");
 
@@ -56,11 +56,19 @@ namespace FormeleMethodenEindproject.Graphviz
         public void drawGraph() {
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             startInfo.FileName = "cmd.exe";
             startInfo.Arguments = @"/C dot -Tpng " + directory + " -o " + Path.GetFullPath(Path.Combine(directory, @"..\graph.png"));
             process.StartInfo = startInfo;
             process.Start();
+            
+            System.Diagnostics.Process process2 = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo2 = new System.Diagnostics.ProcessStartInfo();
+            startInfo2.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+            startInfo2.FileName = "cmd.exe";
+            startInfo2.Arguments = @"/C " + Path.GetFullPath(Path.Combine(directory, @"..\graph.png"));
+            process2.StartInfo = startInfo2;
+            process2.Start();
         }
     }
 }
