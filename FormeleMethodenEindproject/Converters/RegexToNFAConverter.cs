@@ -51,14 +51,14 @@ namespace FormeleMethodenEindproject.Converters
 
                 case Regex.Operator.OR:
                     int tmp = _dfabuilder.LastNodeID; // 0
-                    Console.WriteLine("tmp: " + tmp);
+                    //Console.WriteLine("tmp: " + tmp);
                     RegexToNFARecursive(regex.left);
                     if (regex.left.op == Regex.Operator.ONE) {
                         this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1);
                         _dfabuilder.addTransition(_dfabuilder.LastNodeID -1, _dfabuilder.LastNodeID, regex.left.terminal);
                     }
                     int x = _dfabuilder.LastNodeID; // 1
-                    Console.WriteLine("x: " + x);
+                    //Console.WriteLine("x: " + x);
                     RegexToNFARecursive(regex.right);
                     if (regex.right.op == Regex.Operator.ONE)
                     {
@@ -66,7 +66,7 @@ namespace FormeleMethodenEindproject.Converters
                         _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, regex.right.terminal);
                     }
                     int y = _dfabuilder.LastNodeID; // 2
-                    Console.WriteLine("y: " + y);
+                    //Console.WriteLine("y: " + y);
                     
                     _dfabuilder.addTransition(tmp, tmp + 1, 'e');
                     _dfabuilder.addTransition(tmp, x + 1, 'e');
@@ -108,7 +108,7 @@ namespace FormeleMethodenEindproject.Converters
 
                 case Regex.Operator.STAR:
                     int st0 = _dfabuilder.LastNodeID; // 0
-                    Console.WriteLine("st0: " +  st0);
+                    //Console.WriteLine("st0: " +  st0);
                     RegexToNFARecursive(regex.left);
                     if (regex.left.op == Regex.Operator.ONE)
                     {
@@ -116,7 +116,7 @@ namespace FormeleMethodenEindproject.Converters
                         _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, regex.left.terminal);
                     }
                     int st1 = _dfabuilder.LastNodeID; // 4
-                    Console.WriteLine("st1: " + st1);
+                    //Console.WriteLine("st1: " + st1);
 
                     _dfabuilder.addTransition(st0, st0 + 1, 'e'); // Add epsilon transition in the beginning
                     _dfabuilder.addTransition(st1, st0, 'e'); // Add epsilon transition back for star
@@ -128,7 +128,7 @@ namespace FormeleMethodenEindproject.Converters
 
                 case Regex.Operator.PLUS:
                     int pt0 = _dfabuilder.LastNodeID; // 0
-                    Console.WriteLine("st0: " + pt0);
+                    //Console.WriteLine("st0: " + pt0);
                     RegexToNFARecursive(regex.left);
                     if (regex.left.op == Regex.Operator.ONE)
                     {
@@ -136,7 +136,7 @@ namespace FormeleMethodenEindproject.Converters
                         _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, regex.left.terminal);
                     }
                     int pt1 = _dfabuilder.LastNodeID; // 4
-                    Console.WriteLine("st1: " + pt1);
+                    //Console.WriteLine("st1: " + pt1);
 
                     _dfabuilder.addTransition(pt0, pt0 + 1, 'e'); // Add epsilon transition in the beginning
                     _dfabuilder.addTransition(pt1, pt0, 'e'); // Add epsilon transition back for plus

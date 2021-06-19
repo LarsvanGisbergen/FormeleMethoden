@@ -30,21 +30,20 @@ namespace FormeleMethodenEindproject
 
             //Console.WriteLine(dfa);
 
-            //regex used: (a|b)(b|a)
+            //regex used: ab+ba
             Regex a = new Regex('a');
             Regex b = new Regex('b');
-
             Regex ab = a.dot(b);
-            Regex bora = b.or(a);
-            Regex borastar = bora.star();
-            Regex boraplus = bora.plus();
+            Regex ba = b.dot(a);
+            Regex abplusba = (ab.plus()).dot(ba);
 
-            Regex final = boraplus;
+            Regex complex = abplusba;
+            Regex final = complex;
 
             RegexToNFAConverter rnc = new RegexToNFAConverter();
             DFAbuilder db = rnc.RegexToNFA(final);
-            db.printTransitionStructure();
-
+            //db.printTransitionStructure();
+            Console.WriteLine("Word accepted: " + db.acceptWord("ababbba"));
             //SortedSet<string> language = RegexLogic.regexToLanguage(final, 5);
             //foreach (string word in language)
             //{
