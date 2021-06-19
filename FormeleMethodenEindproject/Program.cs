@@ -34,17 +34,29 @@ namespace FormeleMethodenEindproject
             Regex a = new Regex('a');
             Regex b = new Regex('b');
 
+            Regex astar = a.star();
+            Regex bstar = b.star();
             Regex ab = a.dot(b);
-            Regex bora = b.or(a);
-            Regex borastar = bora.star();
-            Regex boraplus = bora.plus();
+            Regex ba = b.dot(a);
+            Regex aorb = a.or(b);
+            Regex abba = ab.dot(ba);
+            Regex aborba = ab.or(ba);
+            Regex abbaorba = abba.or(ba);
+            Regex astarorbstar = astar.or(bstar);
 
-            Regex final = boraplus;
+            Regex final = ((a.star()).dot(aorb)).or(astar);
+            //final = a.or(astar);
+            //final = a.or(a.plus());
+            final = a.or(bstar).dot(astar.or(aborba)).plus();
+            //final = a.or(aborba);
 
             RegexToNFAConverter rnc = new RegexToNFAConverter();
             DFAbuilder db = rnc.RegexToNFA(final);
-            db.printTransitionStructure();
 
+            //NFAToDFAConverter nfac = new NFAToDFAConverter("ab", db);
+            //nfac.NFAToDFA();
+
+            //db.printTransitionStructure();
             //SortedSet<string> language = RegexLogic.regexToLanguage(final, 5);
             //foreach (string word in language)
             //{
