@@ -19,7 +19,7 @@ namespace FormeleMethodenEindproject.Graphviz
 
         public async Task createGraph()
         {
-            //Console.WriteLine(directory);
+            
             List<string> lines = new List<string>(); 
             lines.Add("digraph id {\nrankdir=LR;");
 
@@ -32,7 +32,7 @@ namespace FormeleMethodenEindproject.Graphviz
                 }
                 if (node.End) { line += "[shape=doublecircle]"; }
 
-                //Console.WriteLine("node\nid: " + node.Id +  " begin: "+ node.Begin + " end: " + node.End);
+                
                 lines.Add(line);
             });
 
@@ -42,7 +42,7 @@ namespace FormeleMethodenEindproject.Graphviz
                     line += "[label=\"ε\"]";
                 else
                     line += "[label=\"" + t.Symbol + "\"]";
-                //Console.WriteLine("Transition:\nfrom: " + t.Origin + " to: " + t.Dest + " terminal: " + t.Symbol);
+                
                 lines.Add(line);
             });
 
