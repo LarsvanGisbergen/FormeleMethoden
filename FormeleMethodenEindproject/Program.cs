@@ -30,20 +30,20 @@ namespace FormeleMethodenEindproject
 
             //Console.WriteLine(dfa);
 
-            //regex used: aa|ab 
+            //regex used: ab+ba
             Regex a = new Regex('a');
             Regex b = new Regex('b');
-            Regex aa = a.dot(a);
-            Regex bb = b.dot(b);
-            Regex aastarbb = (aa.star()).dot(bb);
+            Regex ab = a.dot(b);
+            Regex ba = b.dot(a);
+            Regex abplusba = (ab.plus()).dot(ba);
 
-            Regex complex = aastarbb;
+            Regex complex = abplusba;
             Regex final = complex;
 
             RegexToNFAConverter rnc = new RegexToNFAConverter();
             DFAbuilder db = rnc.RegexToNFA(final);
             //db.printTransitionStructure();
-            Console.WriteLine("Word accepted: " + db.acceptWord("aabb"));
+            Console.WriteLine("Word accepted: " + db.acceptWord("abba"));
             //SortedSet<string> language = RegexLogic.regexToLanguage(final, 5);
             //foreach (string word in language)
             //{
@@ -51,8 +51,8 @@ namespace FormeleMethodenEindproject
             //}
             //Console.WriteLine("Language size: " + language.Count);
 
-            Graphbuilder g = new Graphbuilder(db.createDFA());
-            await g.createGraph();
+            //Graphbuilder g = new Graphbuilder(db.createDFA());
+            //await g.createGraph();
 
 
             //generate whole language from alphabet

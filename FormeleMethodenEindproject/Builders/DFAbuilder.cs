@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace FormeleMethodenEindproject
 {
@@ -7,7 +9,7 @@ namespace FormeleMethodenEindproject
     {
         private char[] alphabet;
         private string alphabet_as_string; // in case of extra functionality
-        private List<Node> nodes;
+        private List<Node> nodes; 
         private List<Transition> transitions;
         private int lastNodeID;
         private bool accepted = false;
@@ -33,19 +35,19 @@ namespace FormeleMethodenEindproject
         {
             foreach (Node node in nodes)
             {
-                if (node.Id == id)
+                if(node.Id == id)
                 {
                     return false;
                 }
             }
-            nodes.Add(new Node(begin, end, id));
+            nodes.Add(new Node(begin,end,id));
             this.lastNodeID++;
             return true;
         }
 
         public bool addTransition(int origin, int dest, char symbol)
         {
-            if (!(Array.IndexOf(alphabet, symbol) > -1))
+            if(!(Array.IndexOf(alphabet,symbol) > -1))
             {
                 return false;
             }
@@ -59,12 +61,10 @@ namespace FormeleMethodenEindproject
                 if (node.Id == origin) { found_or = true; };
                 if (node.Id == dest) { found_dest = true; };
             }
-            foreach (Transition transition in transitions)
-            {
-                if (transition.Origin == origin && transition.Dest == dest && transition.Symbol == symbol) { exists = true; };
+            foreach (Transition transition in transitions) {
+                if (transition.Origin == origin && transition.Dest == dest && transition.Symbol == symbol) { exists = true; };            
             }
-            if (found_or && found_dest && !exists)
-            {
+            if (found_or && found_dest && !exists) {
                 transitions.Add(new Transition(origin, dest, symbol));
                 return true;
             }
@@ -79,7 +79,7 @@ namespace FormeleMethodenEindproject
         public DFA createBasicDFA()
         {
             this.lastNodeID = 1;
-            return new DFA(this.alphabet, new List<Node>() { new Node(true, false, 0), new Node(false, true, 1) }, new List<Transition>() { new Transition(0, 1, '-') });
+            return new DFA(this.alphabet, new List<Node>() { new Node(true, false, 0), new Node(false,true,1) }, new List<Transition>() {new Transition(0,1,'-') });
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace FormeleMethodenEindproject
         public bool acceptWord(string word)
         {
             // check to see if any chars are not in alphabet
-            foreach (char c in word)
+            foreach(char c in word)
             {
                 if (!isInAlphabet(c))
                 {
@@ -101,64 +101,60 @@ namespace FormeleMethodenEindproject
             }
 
             //recursively check paths until endnode is reached, accepted will be set to true if valid path is found
-            char[] word_chars = word.ToCharArray();           
+            char[] word_chars = word.ToCharArray();
+            List<Transition> tmp = getTransitionsFromOrigin(0);
             foreach (Transition t in getTransitionsFromOrigin(0))
-            {
-                acceptRecursive(0, word_chars, t);
-                if (accepted)
-                {
-                    break;
-                }
+            {               
+                acceptRecursive(0, word_chars, t);               
             }
-            return accepted;
+            return accepted;         
         }
 
         private void acceptRecursive(int curChar, char[] word, Transition transition)
-        {
-            if (transition.Symbol == 'e')
-            {
+        {                     
+            if (transition.Symbol == 'e')               
+                {
                 if (getNodeFromId(transition.Dest).End)
-                {
+                {                                       
                     accepted = true;
-                }
+                }               
                 foreach (Transition t in getTransitionsFromOrigin(transition.Dest))
-                {
-                    acceptRecursive(curChar, word, t);
+                    {                      
+                        acceptRecursive(curChar, word, t);
+                    }
                 }
-            }
 
-
+            
 
             else if (curChar < word.Length && transition.Symbol == word[curChar])
-            {
+                {                
                 foreach (Transition t in getTransitionsFromOrigin(transition.Dest))
-                {
-                    acceptRecursive(curChar + 1, word, t);
-                }
+                    {
+                        acceptRecursive(curChar + 1, word, t);
+                    }
             }
 
-            else if (curChar == word.Length - 1)
+            else if(curChar == word.Length - 1)
             {
                 if (getNodeFromId(transition.Dest).End)
-                {
+                {                                      
                     accepted = true;
                 }
-                else
+                else 
                 {
                     foreach (Transition t in getTransitionsFromOrigin(transition.Dest))
                     {
-                        if (t.Symbol.Equals("e"))
-                        {
+                        if (t.Symbol.Equals("e")) {
                             acceptRecursive(curChar, word, t);
                         }
-
+                        
                     }
-                }
+                }             
             }
-
+                      
         }
-
-
+        
+        
 
         public List<Transition> getTransitionsFromOrigin(int origin)
         {
@@ -179,7 +175,7 @@ namespace FormeleMethodenEindproject
 
         private bool isInAlphabet(char c)
         {
-            foreach (char chr in alphabet)
+            foreach(char chr in alphabet)
             {
                 if (chr.Equals(c))
                 {
@@ -213,6 +209,6 @@ namespace FormeleMethodenEindproject
             }
         }
 
-
+        
     }
 }
