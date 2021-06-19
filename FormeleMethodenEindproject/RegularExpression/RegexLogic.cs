@@ -22,7 +22,7 @@ namespace FormeleMethodenEindproject.RegularExpression
             SortedSet<string> languageResult = new SortedSet<string>();
             SortedSet<string> languageLeft, languageRight;
 
-            Console.WriteLine("maxlen: " + maxLen);
+            
             if (maxLen < 1)
             {
                 return emptyLanguage;
@@ -110,7 +110,6 @@ namespace FormeleMethodenEindproject.RegularExpression
             IEnumerable<String> allValidWords = regexToLanguage(regex, length);
             IEnumerable<String> nonValidWords = allValidWords;
             IEnumerable <String> allPossibleWords = generateFullLanguage(alphabet, length);
-
 
             return allPossibleWords.Where(w => !w.Equals(allValidWords.Any()));
         }
