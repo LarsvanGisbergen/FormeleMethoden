@@ -1,7 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using FormeleMethodenEindproject.RegularExpression;
+using FormeleMethodenEindproject.Converters;
 
 namespace FormeleMethodenEindproject
 {
@@ -45,6 +48,20 @@ namespace FormeleMethodenEindproject
             return true;
         }
 
+        public bool addNode(bool begin, bool end, int id, string name)
+        {
+            foreach (Node node in nodes)
+            {
+                if (node.Id == id)
+                {
+                    return false;
+                }
+            }
+            nodes.Add(new Node(begin, end, id, name));
+            this.lastNodeID++;
+            return true;
+        }
+
         public bool addTransition(int origin, int dest, char symbol)
         {
             if(!(Array.IndexOf(alphabet,symbol) > -1))
@@ -57,7 +74,6 @@ namespace FormeleMethodenEindproject
             bool exists = false;
             foreach (Node node in nodes)
             {
-
                 if (node.Id == origin) { found_or = true; };
                 if (node.Id == dest) { found_dest = true; };
             }
@@ -71,6 +87,10 @@ namespace FormeleMethodenEindproject
             return false;
         }
 
+        public void deleteTransition(int origin, int dest, char symbol) {
+            this.transitions.RemoveAll(x => (x.Origin == origin && x.Dest == dest && x.Symbol.Equals(symbol)));
+        }
+
         public DFA createDFA()
         {
             return new DFA(this.alphabet, this.nodes, this.transitions);
@@ -80,6 +100,81 @@ namespace FormeleMethodenEindproject
         {
             this.lastNodeID = 1;
             return new DFA(this.alphabet, new List<Node>() { new Node(true, false, 0), new Node(false,true,1) }, new List<Transition>() {new Transition(0,1,'-') });
+        }
+
+        public DFAbuilder createDFAStartsWith(Regex start)
+        {
+            resetBuilder();
+            Regex alphabet = null;
+            if (this.alphabet.Length > 2)
+            {
+                for (int i = 0; i < this.alphabet.Length - 1; i++)
+                {
+                    if (alphabet == null)
+                    {
+                        alphabet = new Regex(this.alphabet[i]);
+                    }
+                    else 
+                    {
+                        alphabet = alphabet.or(new Regex(this.alphabet[i]));
+                    }
+                }
+            }
+            alphabet = alphabet.star();
+
+            start = start.dot(alphabet);
+            RegexToNFAConverter rnc = new RegexToNFAConverter(new string(this.alphabet));
+            return rnc.RegexToNFA(start);
+        }
+
+        public DFAbuilder createDFAEndsWith(Regex start)
+        {
+            resetBuilder();
+            Regex alphabet = null;
+            if (this.alphabet.Length > 2)
+            {
+                for (int i = 0; i < this.alphabet.Length - 1; i++)
+                {
+                    if (alphabet == null)
+                    {
+                        alphabet = new Regex(this.alphabet[i]);
+                    }
+                    else
+                    {
+                        alphabet = alphabet.or(new Regex(this.alphabet[i]));
+                    }
+                }
+            }
+            alphabet = alphabet.star();
+
+            start = alphabet.dot(start);
+            RegexToNFAConverter rnc = new RegexToNFAConverter(new string(this.alphabet));
+            return rnc.RegexToNFA(start);
+        }
+
+        public DFAbuilder createDFAContains(Regex start)
+        {
+            resetBuilder();
+            Regex alphabet = null;
+            if (this.alphabet.Length > 2)
+            {
+                for (int i = 0; i < this.alphabet.Length - 1; i++)
+                {
+                    if (alphabet == null)
+                    {
+                        alphabet = new Regex(this.alphabet[i]);
+                    }
+                    else
+                    {
+                        alphabet = alphabet.or(new Regex(this.alphabet[i]));
+                    }
+                }
+            }
+            alphabet = alphabet.star();
+
+            start = alphabet.dot(start).dot(alphabet);
+            RegexToNFAConverter rnc = new RegexToNFAConverter(new string(this.alphabet));
+            return rnc.RegexToNFA(start);
         }
 
         /// <summary>
@@ -153,9 +248,16 @@ namespace FormeleMethodenEindproject
             }
                       
         }
-        
-        
+        public int getTransitionsSize()
+        {
+            return this.transitions.Count;
+        }
 
+        /// <summary>
+        /// This method returns all the transitions from the nfa that have the same origin as the parameter
+        /// </summary>
+        /// <param name="origin"></param> This is the origin paramater to find the list items
+        /// <returns></returns> List of transitions
         public List<Transition> getTransitionsFromOrigin(int origin)
         {
             return transitions.FindAll(t =>
@@ -163,9 +265,28 @@ namespace FormeleMethodenEindproject
                 return t.Origin == origin;
             });
         }
-        public int getTransitionsSize()
+
+        public List<Node> getNodes() {
+            return nodes;
+        }
+
+        public List<Transition> getTransitions() {
+            return transitions;
+        }
+
+        public Node getNodeFromId(int id) {
+            return nodes.Find(n =>
+            {
+                return n.Id == id;
+            });
+        }
+
+        public char[] getAlphabet() {
+            return alphabet;
+        }
+        public string getAlphabetAsString()
         {
-            return this.transitions.Count;
+            return alphabet_as_string;
         }
         public override string ToString()
         {
@@ -185,14 +306,6 @@ namespace FormeleMethodenEindproject
             return false;
         }
 
-        public Node getNodeFromId(int id)
-        {
-            return nodes.Find(n =>
-            {
-                return n.Id == id;
-            });
-        }
-
         public void printTransitionStructure()
         {
             Console.WriteLine("transitions:");
@@ -205,10 +318,25 @@ namespace FormeleMethodenEindproject
             Console.WriteLine("nodes:");
             foreach (Node n in this.nodes)
             {
-                Console.WriteLine("begin: " + n.Begin + " end: " + n.End + " id: " + n.Id);
+                Console.WriteLine("begin: " + n.Begin + " end: " + n.End + " id: " + n.Id + " name: " + n.Name);
             }
         }
+        public List<Node> getBeginNodes()
+        {
+            return nodes.Where(x => x.Begin).ToList();
+        }
+        public List<Node> getEndNodes() {
+            return nodes.Where(x => x.End).ToList();
+        }
 
-        
+        public void setEndNode(int id) {
+            nodes.First(x => { return x.Id == id; }).End = true;            
+        }
+
+        public void resetBuilder() {
+            this.nodes = new List<Node>();
+            this.transitions = new List<Transition>();
+            this.lastNodeID = -1;
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace FormeleMethodenEindproject.RegularExpression
             SortedSet<string> languageResult = new SortedSet<string>();
             SortedSet<string> languageLeft, languageRight;
 
-            Console.WriteLine("maxlen: " + maxLen);
+            
             if (maxLen < 1)
             {
                 return emptyLanguage;
@@ -37,7 +37,7 @@ namespace FormeleMethodenEindproject.RegularExpression
                     break;
 
                 case Regex.Operator.OR:
-                    languageLeft = regex.left == null ? emptyLanguage : regexToLanguage(regex.left, maxLen-1);
+                    languageLeft = regex.left == null ? emptyLanguage : regexToLanguage(regex.left, maxLen - 1);
                     languageRight = regex.right == null ? emptyLanguage : regexToLanguage(regex.right, maxLen - 1);                  
                     languageResult.UnionWith(languageLeft);
                     languageResult.UnionWith(languageRight);
@@ -58,7 +58,7 @@ namespace FormeleMethodenEindproject.RegularExpression
 
                 case Regex.Operator.STAR:
                 case Regex.Operator.PLUS:
-                    languageLeft = regex.left == null ? emptyLanguage : regexToLanguage(regex.left, maxLen - 1);
+                    languageLeft = regex.left == null ? emptyLanguage : regexToLanguage(regex.left, maxLen);
                     languageResult.UnionWith(languageLeft);
                     for (int i = 1; i < maxLen; i++)
                     {
@@ -80,13 +80,21 @@ namespace FormeleMethodenEindproject.RegularExpression
                     Console.WriteLine("Case unrecognised, ended in default case...");
                     break;
             }
-
-
-            return languageResult;
+            SortedSet<string> output = new SortedSet<string>();
+            output.UnionWith(languageResult.Where(word => (word.Length <= maxLen + 1)));
+            return output;
         }
 
+        public static IEnumerable<String> generateFullLanguage(IEnumerable<char> alphabet, int length) {
+            IEnumerable<string> fullLanguage = new List<string>() { "" };
 
-        public static IEnumerable<String> generateFullLanguage(IEnumerable<char> alphabet, int length)
+            for (int i = length; i > 0; i--)
+            {
+                fullLanguage = fullLanguage.Union(generateFullLanguageRecursive(alphabet,i));
+            }
+            return fullLanguage;
+        }
+        public static IEnumerable<String> generateFullLanguageRecursive(IEnumerable<char> alphabet, int length)
         {
             if (length > 0)
             {
@@ -106,13 +114,14 @@ namespace FormeleMethodenEindproject.RegularExpression
       
       public static IEnumerable<String> generateNonValidWords(Regex regex, IEnumerable<char> alphabet,  int length)
         {
-            
             IEnumerable<String> allValidWords = regexToLanguage(regex, length);
-            IEnumerable<String> nonValidWords = allValidWords;
-            IEnumerable <String> allPossibleWords = generateFullLanguage(alphabet, length);
+            IEnumerable<String> allPossibleWords = generateFullLanguage(alphabet, length);
 
+            IEnumerable<String> nonValidWords = allPossibleWords.Where(word => {
+                return !allValidWords.Contains(word);
+            });
 
-            return allPossibleWords.Where(w => !w.Equals(allValidWords.Any()));
+            return nonValidWords;
         }
     }
 }

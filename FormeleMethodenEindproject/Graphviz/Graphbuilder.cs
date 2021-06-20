@@ -2,53 +2,60 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FormeleMethodenEindproject.Graphviz
 {
     class Graphbuilder
     {
-        private readonly string directory = "D://graphvizdiagram/graph.dot";
+        private string directory = "D://graphvizdiagram//";
 
-        private DFA dfa;
+        private DFAbuilder dfa;
+        private string filename;
 
-        public Graphbuilder(DFA dfa)
+        public Graphbuilder(DFAbuilder dfa)
         {
             this.dfa = dfa;
+            this.directory += "graph";
+        }
+
+        public Graphbuilder(DFAbuilder dfa, string filename)
+        {
+            this.dfa = dfa;
+            this.directory += filename;
         }
 
         public async Task createGraph()
         {
-            //Console.WriteLine(directory);
+            
             List<string> lines = new List<string>(); 
             lines.Add("digraph id {\nrankdir=LR;");
 
-
-            dfa.Nodes.ForEach(node => {
-                string line = "" + node.Id;
+            dfa.getNodes().ForEach(node => {
+                string line = "\"" + node.Name + "\"";
                 if (node.Begin) {
                     lines.Add("fake" + node.Id + " [style=invisible]\nfake" + node.Id + " -> " + node.Id + " [style=bold]");
                     line += "[root=true]"; 
                 }
                 if (node.End) { line += "[shape=doublecircle]"; }
 
-               //Console.WriteLine("node\nid: " + node.Id +  " begin: "+ node.Begin + " end: " + node.End);
+                
                 lines.Add(line);
             });
 
-            dfa.Transitions.ForEach(t => {
-                string line = "" + t.Origin + " -> " + t.Dest;
-                if (t.Symbol.Equals("e"))
+            dfa.getTransitions().ForEach(t => {
+                string line = "\"" + dfa.getNodeFromId(t.Origin).Name + "\" -> \"" + dfa.getNodeFromId(t.Dest).Name + "\"";
+                if (t.Symbol.Equals('e'))
                     line += "[label=\"ε\"]";
                 else
                     line += "[label=\"" + t.Symbol + "\"]";
-                //Console.WriteLine("Transition:\nfrom: " + t.Origin + " to: " + t.Dest + " terminal: " + t.Symbol);
+                
                 lines.Add(line);
             });
 
             lines.Add("}");
-
-            await File.WriteAllLinesAsync(directory, lines);
+            await File.WriteAllLinesAsync(directory + ".dot", lines);
 
             drawGraph();
         }
@@ -58,15 +65,16 @@ namespace FormeleMethodenEindproject.Graphviz
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = @"/C dot -Tpng " + directory + " -o " + Path.GetFullPath(Path.Combine(directory, @"..\graph.png"));
+            startInfo.Arguments = @"/C dot -Tpng " + directory + ".dot" + " -o " + directory + ".png";
             process.StartInfo = startInfo;
             process.Start();
-            
+
+            Thread.Sleep(500);
             System.Diagnostics.Process process2 = new System.Diagnostics.Process();
             System.Diagnostics.ProcessStartInfo startInfo2 = new System.Diagnostics.ProcessStartInfo();
             startInfo2.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             startInfo2.FileName = "cmd.exe";
-            startInfo2.Arguments = @"/C " + Path.GetFullPath(Path.Combine(directory, @"..\graph.png"));
+            startInfo2.Arguments = @"/C " + directory + ".png";
             process2.StartInfo = startInfo2;
             process2.Start();
         }

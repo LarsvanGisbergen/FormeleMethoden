@@ -23,6 +23,26 @@ namespace FormeleMethodenEindproject
         internal List<Transition> Transitions { get => transitions; }
 
         /// <summary>
+        /// Compares the DFA object to a given DFA object based on its transitions.
+        /// Will return true if transitions match.
+        /// </summary>
+        public bool isIdentical(DFA dfa)
+        {
+            if (transitions.Count != dfa.transitions.Count)
+            {
+                return false;
+            }
+            foreach (Transition t in this.transitions)
+            {
+                if (!dfa.transitions.Contains(t))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// prints useful information about the contents of the DFA.
         /// contents consist of: alphabet string, amount of nodes and amount of transitions.
         /// </summary>
