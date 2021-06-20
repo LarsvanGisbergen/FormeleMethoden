@@ -17,45 +17,105 @@ namespace FormeleMethodenEindproject.Converters
             this.nfa = nfa;
         }
 
-        public void NFAToDFA() {
-
+        public DFAbuilder NFAToDFA() {
+            //Console.WriteLine("NFA TO DFA CONVERSION");
+            //Generate original transition table
             List<List<string>> ortable = generateOriginalTable();
-
-            printTable(ortable);
-
-            Console.WriteLine("NFA TO DFA CONVERSION");
+            //Print original table
+            //printTable(ortable);
+            
             char[] alphabet = nfa.getAlphabet();
+
+            //Init new table
             List<List<string>> table = new List<List<string>>();
-            int i = 0;
 
-            //Iterate through nodes
 
-            //Startnode
-            Node node = nfa.getNodes()[0];
+            //Init first row with first row of original table
+            table.Add(ortable[0]);
 
-            //Init new row
-            table.Add(new List<string>());
+            //Index of table
+            int index = 0;
+            bool done = false;
 
-            //Init columns
-            Console.WriteLine("Initializing colums for i:" + i);
-            for (int j = 0; j < alphabet.Length; j++)
+            while (!done)
             {
-                table[i].Add("");
+                bool change = false;
+                for (int i = 1; i < ortable[0].Count; i++)
+                {
+                    string subject = table[index][i];
+                    if (subject.Equals("{}"))
+                    {
+                        if (!existInTable(table, subject))
+                        {
+                            table.Add(new List<string>() { "{}", "{}", "{}" });
+                            change = true;
+                        }
+                    }
+                    else if (existInTable(table, subject)) { }
+                    else if (existInTable(ortable, subject))
+                    {
+                        //Console.WriteLine(subject + " exists");
+                        //Console.WriteLine("Add new row to table with node " + subject);
+                        table.Add(ortable[index]);
+                        change = true;
+                    }
+                    else
+                    {
+                        //Console.WriteLine(subject + " doesnt exist");
+                        table.Add(generateRowFromOriginalTable(ortable, subject));
+                        change = true;
+                    }
+                }
+                index++;
+                if (!change) { done = true; }
             }
 
-            //Set First column value to node id
-            table[i][0] = "" + node.Id;
+            //printTable(table);
+            DFAbuilder builder = new DFAbuilder(nfa.getAlphabetAsString());
+            List<string> beginNodes = nfa.getBeginNodes().Select(x => "" + x.Id).ToList();
+            List<string> endNodes = nfa.getEndNodes().Select(x => "" + x.Id).ToList();
 
-            //Iterate through alphabet
-            for (int j = 0; j < alphabet.Length - 1; j++)
+            int nodeId = 0;
+            //Generate new Nodes
+            table.ForEach(list =>
             {
-                //Get all destination nodes recursively
-                recursiveNodeDest(node, alphabet[j], false); // b
-                //Add them in the appropriate column
-                table[i][j + 1] =  getRecListAsString();
-            }
+                builder.addNode(isBeginOrEndNode(list[0],beginNodes), isBeginOrEndNode(list[0], endNodes), nodeId, list[0]);
+                nodeId++;
+            });
+
+            //Generate new Transitions
+            table.ForEach(list =>
+            {
+                for (int i = 0; i < alphabet.Length -1; i++)
+                {
+                    builder.addTransition(getIndexFromTable(table,list[0]), getIndexFromTable(table, list[i+ 1]),alphabet[i]);
+                }
+            });
+            return builder;
         }
 
+        private int getIndexFromTable(List<List<string>> table, string id) {
+            int index = -1;
+            for (int i = 0; i < table.Count; i++)
+            {
+                if (table[i][0].Equals(id)) { index = i; }
+            }
+            return index;
+        }
+
+        private bool isBeginOrEndNode(string id, List<string> nodes)
+        {
+            List<string> ids = id.Split(',').ToList();
+            bool isBeginOrEnd = false;
+            nodes.ForEach(x =>
+            {
+                ids.ForEach(y =>
+                {
+                    if (x.Equals(y)) { isBeginOrEnd = true; }
+                });
+            });
+            return isBeginOrEnd;
+        }
         public void recursiveNodeDest(Node n, char c, bool used) {
             List<Transition> transitions = nfa.getTransitionsFromOrigin(n.Id);
 
@@ -90,7 +150,7 @@ namespace FormeleMethodenEindproject.Converters
                 table.Add(new List<string>());
                 table[i].Add("" + nodes[i].Id);
 
-                for (int j = 0; j < alphabet.Length; j++)
+                for (int j = 0; j < alphabet.Length - 1; j++)
                 {
                     recursiveNodeDest(nodes[i], alphabet[j], false); // b
                     table[i].Add(getRecListAsString());
@@ -102,12 +162,13 @@ namespace FormeleMethodenEindproject.Converters
 
         public string getRecListAsString() {
             string values = "";
-            foreach (int value in recList.OrderByDescending(x => x).Reverse()) { values += value + " "; }
+            foreach (int value in recList.OrderByDescending(x => x).Reverse()) { values += value + ","; }
+            if (values.Length > 0) { values = values.Remove(values.Length - 1, 1); }
             return values;
         }
 
         public void printTable(List<List<string>> table) {
-            Console.WriteLine("Table:");
+            //Console.WriteLine("Table:");
 
             table.ForEach(x =>
             {
@@ -116,9 +177,75 @@ namespace FormeleMethodenEindproject.Converters
                 {
                     temp += y + " | ";
                 });
-                Console.WriteLine(temp);
+                //Console.WriteLine(temp);
             });
         }
+
+        public bool existInTable(List<List<string>> table, string id) {
+            if (table.Count == 0) { return false; }
+            List<string> temp = new List<string>();
+            table.ForEach(list => temp.Add(list[0]));
+            return temp.Contains(id);
+        }
+
+        public List<string> generateRowFromOriginalTable(List<List<string>> ortable, string id) {
+            //Console.WriteLine("this is id: " + id);
+            List<String> temp = new List<string>();
+            for (int i = 0; i < nfa.getAlphabet().Length; i++)
+            {
+                temp.Add("");
+            }
+            temp[0] = id;
+            List<string> ids = id.Split(',').ToList();
+            //ids.ForEach(x => Console.WriteLine(x));
+
+            //Loop through ortable
+            for (int i = 0; i < ortable.Count; i++) // 0 - 12
+            {
+                //Loop through ids
+                ids.ForEach(id => // 3 4
+                {
+                    //Check if they match
+                    if (id.Equals(ortable[i][0])) { // 3 4 equals 0 - 12
+                        //Loop through ortable and add values
+                        for (int j = 1; j < nfa.getAlphabet().Length; j++) 
+                        {
+                            temp[j] += ortable[i][j] + ",";
+                        }
+                    }
+                });
+            }
+
+            //Fixup and reformat row
+            temp = reformatRow(temp);
+            //Console.WriteLine("row:");
+            //temp.ForEach(x => Console.WriteLine(x));
+
+            return temp;
+        }
+
+        public List<string> reformatRow(List<string> input) {
+            List<string> output = new List<string>();
+            input.ForEach(item =>
+            {
+                List<string> ids = item.Split(',').ToList();
+                ids = ids.Distinct().ToList();
+                ids = ids.FindAll(x => !x.Equals(""));
+                string values = "";
+                foreach (string value in ids) { values += value + ","; }
+                if (values.Length > 0) { values = values.Remove(values.Length - 1, 1); }
+                if (values.Equals(""))
+                {
+                    output.Add("{}");
+                }
+                else
+                {
+                    output.Add(values);
+                }
+            });
+            return output;
+        }
+        //public int findIndexFrom
 
 
     }

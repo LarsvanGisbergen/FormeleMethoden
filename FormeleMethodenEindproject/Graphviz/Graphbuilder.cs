@@ -10,9 +10,9 @@ namespace FormeleMethodenEindproject.Graphviz
     {
         private readonly string directory = "D://graphvizdiagram/graph.dot";
 
-        private DFA dfa;
+        private DFAbuilder dfa;
 
-        public Graphbuilder(DFA dfa)
+        public Graphbuilder(DFAbuilder dfa)
         {
             this.dfa = dfa;
         }
@@ -23,9 +23,8 @@ namespace FormeleMethodenEindproject.Graphviz
             List<string> lines = new List<string>(); 
             lines.Add("digraph id {\nrankdir=LR;");
 
-
-            dfa.Nodes.ForEach(node => {
-                string line = "" + node.Id;
+            dfa.getNodes().ForEach(node => {
+                string line = "\"" + node.Name + "\"";
                 if (node.Begin) {
                     lines.Add("fake" + node.Id + " [style=invisible]\nfake" + node.Id + " -> " + node.Id + " [style=bold]");
                     line += "[root=true]"; 
@@ -36,8 +35,8 @@ namespace FormeleMethodenEindproject.Graphviz
                 lines.Add(line);
             });
 
-            dfa.Transitions.ForEach(t => {
-                string line = "" + t.Origin + " -> " + t.Dest;
+            dfa.getTransitions().ForEach(t => {
+                string line = "\"" + dfa.getNodeFromId(t.Origin).Name + "\" -> \"" + dfa.getNodeFromId(t.Dest).Name + "\"";
                 if (t.Symbol.Equals("e"))
                     line += "[label=\"ε\"]";
                 else
