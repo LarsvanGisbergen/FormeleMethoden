@@ -26,8 +26,8 @@ namespace FormeleMethodenEindproject
             this.name = name;
         }
 
-        public bool Begin { get => begin;}
-        public bool End { get => end; }
+        public bool Begin { get => begin; set => begin = value;}
+        public bool End { get => end; set => end = value; }
         public int Id { get => id; }
         public string Name { get => name; }
     }

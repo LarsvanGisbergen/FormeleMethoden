@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using FormeleMethodenEindproject.RegularExpression;
+using FormeleMethodenEindproject.Converters;
 
 namespace FormeleMethodenEindproject
 {
@@ -98,6 +100,81 @@ namespace FormeleMethodenEindproject
         {
             this.lastNodeID = 1;
             return new DFA(this.alphabet, new List<Node>() { new Node(true, false, 0), new Node(false,true,1) }, new List<Transition>() {new Transition(0,1,'-') });
+        }
+
+        public DFAbuilder createDFAStartsWith(Regex start)
+        {
+            resetBuilder();
+            Regex alphabet = null;
+            if (this.alphabet.Length > 2)
+            {
+                for (int i = 0; i < this.alphabet.Length - 1; i++)
+                {
+                    if (alphabet == null)
+                    {
+                        alphabet = new Regex(this.alphabet[i]);
+                    }
+                    else 
+                    {
+                        alphabet = alphabet.or(new Regex(this.alphabet[i]));
+                    }
+                }
+            }
+            alphabet = alphabet.star();
+
+            start = start.dot(alphabet);
+            RegexToNFAConverter rnc = new RegexToNFAConverter(new string(this.alphabet));
+            return rnc.RegexToNFA(start);
+        }
+
+        public DFAbuilder createDFAEndsWith(Regex start)
+        {
+            resetBuilder();
+            Regex alphabet = null;
+            if (this.alphabet.Length > 2)
+            {
+                for (int i = 0; i < this.alphabet.Length - 1; i++)
+                {
+                    if (alphabet == null)
+                    {
+                        alphabet = new Regex(this.alphabet[i]);
+                    }
+                    else
+                    {
+                        alphabet = alphabet.or(new Regex(this.alphabet[i]));
+                    }
+                }
+            }
+            alphabet = alphabet.star();
+
+            start = alphabet.dot(start);
+            RegexToNFAConverter rnc = new RegexToNFAConverter(new string(this.alphabet));
+            return rnc.RegexToNFA(start);
+        }
+
+        public DFAbuilder createDFAContains(Regex start)
+        {
+            resetBuilder();
+            Regex alphabet = null;
+            if (this.alphabet.Length > 2)
+            {
+                for (int i = 0; i < this.alphabet.Length - 1; i++)
+                {
+                    if (alphabet == null)
+                    {
+                        alphabet = new Regex(this.alphabet[i]);
+                    }
+                    else
+                    {
+                        alphabet = alphabet.or(new Regex(this.alphabet[i]));
+                    }
+                }
+            }
+            alphabet = alphabet.star();
+
+            start = alphabet.dot(start).dot(alphabet);
+            RegexToNFAConverter rnc = new RegexToNFAConverter(new string(this.alphabet));
+            return rnc.RegexToNFA(start);
         }
 
         /// <summary>
@@ -251,6 +328,15 @@ namespace FormeleMethodenEindproject
         public List<Node> getEndNodes() {
             return nodes.Where(x => x.End).ToList();
         }
-        
+
+        public void setEndNode(int id) {
+            nodes.First(x => { return x.Id == id; }).End = true;            
+        }
+
+        public void resetBuilder() {
+            this.nodes = new List<Node>();
+            this.transitions = new List<Transition>();
+            this.lastNodeID = -1;
+        }
     }
 }
