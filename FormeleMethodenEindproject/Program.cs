@@ -49,6 +49,21 @@ namespace FormeleMethodenEindproject
             //string alphabet = "abe"; // 
             ////DFAbuilder startswitha = new DFAbuilder(alphabet).createDFAStartsWith(new Regex('a'));
             ////DFAbuilder endswitha = new DFAbuilder(alphabet).createDFAEndsWith(new Regex('a'));
+            //Regex a = new Regex('a');
+            //Regex b = new Regex('b');
+            //Regex ab = a.dot(b);
+            //Regex ba = b.dot(a);
+
+            //Regex final = a.dot(b);
+
+            ////Regex to NFA
+            //RegexToNFAConverter rnc = new RegexToNFAConverter("abe");
+            //DFAbuilder db = rnc.RegexToNFA(final);
+
+            ////Generate DFAbuilders that start, end, or contain their paramater Regex
+            //string alphabet = "abe"; // 
+            //DFAbuilder startswitha = new DFAbuilder(alphabet).createDFAStartsWith(new Regex('a'));
+            //DFAbuilder endswitha = new DFAbuilder(alphabet).createDFAEndsWith(new Regex('a'));
             //DFAbuilder containsa = new DFAbuilder(alphabet).createDFAContains(new Regex('a'));
 
             ////NFA to DFA
@@ -61,20 +76,33 @@ namespace FormeleMethodenEindproject
 
             ////Are these two dfa identical?
             //Regex aorb = a.or(b);
+            ////Generate graph
+            //Graphbuilder g = new Graphbuilder(db, "test");
+            //await g.createGraph();
+
+            ////Are these two dfa identical?
+            //Regex aorb = a.or(b);
             //DFAbuilder firstbuilder = rnc.RegexToNFA(aorb);
             //NFAToDFAConverter nfacfirst = new NFAToDFAConverter();
             //DFAbuilder nfa1 = nfacfirst.NFAToDFA(firstbuilder);
 
             ////Graphbuilder g1 = new Graphbuilder(nfa1,"nfa1");
             ////await g1.createGraph();
+            //Graphbuilder g1 = new Graphbuilder(nfa1,"nfa1");
+            //await g1.createGraph();
 
             //Regex bora = b.or(a);
             //DFAbuilder secondbuilder = rnc.RegexToNFA(aorb);
             //NFAToDFAConverter nfacsecond = new NFAToDFAConverter();
             //DFAbuilder nfa2 = nfacsecond.NFAToDFA(firstbuilder);
 
+
             ////Graphbuilder g2 = new Graphbuilder(nfa2, "nfa2");
             ////await g2.createGraph();
+
+            //Graphbuilder g2 = new Graphbuilder(nfa2, "nfa2");
+            //await g2.createGraph();
+
 
             //if ((nfa1.createDFA()).isIdentical(nfa2.createDFA()))
             //{
@@ -101,6 +129,7 @@ namespace FormeleMethodenEindproject
             //IEnumerable<string> nonValidWords = RegexLogic.generateNonValidWords(final, "ab", 5);
             //Console.WriteLine("All non-valid words:");
             //printStrings(nonValidWords);
+
             #endregion
         }
     }
