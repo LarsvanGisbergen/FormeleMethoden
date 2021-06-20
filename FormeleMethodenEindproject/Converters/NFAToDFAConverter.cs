@@ -42,6 +42,7 @@ namespace FormeleMethodenEindproject.Converters
 
             while (!done)
             {
+                printTable(table);
                 for (int i = 1; i < ortable[0].Count; i++)
                 {
                     string subject = table[index][i];
@@ -77,7 +78,7 @@ namespace FormeleMethodenEindproject.Converters
                 }
             }
             //Print completed table
-            //printTable(table);
+            printTable(table);
             DFAbuilder builder = new DFAbuilder(nfa.getAlphabetAsString());
             List<string> beginNodes = nfa.getBeginNodes().Select(x => "" + x.Id).ToList();
             List<string> endNodes = nfa.getEndNodes().Select(x => "" + x.Id).ToList();
@@ -96,7 +97,6 @@ namespace FormeleMethodenEindproject.Converters
             endNodes.ForEach(x => {
                 if (recList.Contains(int.Parse(x))) {
                     beginNodeIsEndNode = true;
-                    Console.WriteLine("Is end node");
                 }
             });
 
@@ -187,6 +187,7 @@ namespace FormeleMethodenEindproject.Converters
         }
 
         public void printTable(List<List<string>> table) {
+            Console.WriteLine("----------------------------");
             Console.WriteLine("Table:");
 
             table.ForEach(x =>

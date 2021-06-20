@@ -6,6 +6,7 @@ using FormeleMethodenEindproject.Graphviz;
 using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
+using FormeleMethodenEindproject.Testing;
 
 namespace FormeleMethodenEindproject
 {
@@ -13,56 +14,76 @@ namespace FormeleMethodenEindproject
     {
         static async Task Main(string[] args)
         {
-            Regex a = new Regex('a');
-            Regex b = new Regex('b');
-            Regex ab = a.dot(b);
-            Regex ba = b.dot(a);
+            Testapplication testapplication = new Testapplication();
+            testapplication.startTest();
 
-            Regex final = a.dot(b);
+            #region old program
+            //DFAbuilder builder = new DFAbuilder("abe");
+            //builder.addNode(true, false, 0);
+            //builder.addNode(false, false, 1);
+            //builder.addNode(false, true, 2);
+            //builder.addTransition(0, 1, 'a');
+            //builder.addTransition(0, 1, 'b');
+            //builder.addTransition(1, 2, 'a');
+            //builder.createDFA();
 
-            //Regex to NFA
-            RegexToNFAConverter rnc = new RegexToNFAConverter("abe");
-            DFAbuilder db = rnc.RegexToNFA(final);
+            ////(ab | ba) * (ab) +
 
-            //Generate DFAbuilders that start, end, or contain their paramater Regex
-            string alphabet = "abe"; // 
-            DFAbuilder startswitha = new DFAbuilder(alphabet).createDFAStartsWith(new Regex('a'));
-            DFAbuilder endswitha = new DFAbuilder(alphabet).createDFAEndsWith(new Regex('a'));
-            DFAbuilder containsa = new DFAbuilder(alphabet).createDFAContains(new Regex('a'));
+            //Regex a = new Regex('a');
+            //Regex b = new Regex('b');
+            //Regex ab = a.dot(b);
+            //Regex ba = b.dot(a);
+            //Regex aborbastar = (ab.or(ba)).star();
+            //Regex abplus = ab.plus();
 
-            //NFA to DFA
-            NFAToDFAConverter nfac = new NFAToDFAConverter();
-            DFAbuilder nfa = nfac.NFAToDFA(db);
+            //Regex complex = aborbastar;
 
-            //Generate graph
-            Graphbuilder g = new Graphbuilder(db, "test");
-            await g.createGraph();
 
-            //Are these two dfa identical?
-            Regex aorb = a.or(b);
-            DFAbuilder firstbuilder = rnc.RegexToNFA(aorb);
-            NFAToDFAConverter nfacfirst = new NFAToDFAConverter();
-            DFAbuilder nfa1 = nfacfirst.NFAToDFA(firstbuilder);
+            //Regex final = complex;
 
-            Graphbuilder g1 = new Graphbuilder(nfa1,"nfa1");
-            await g1.createGraph();
+            //////Regex to NFA
+            //RegexToNFAConverter rnc = new RegexToNFAConverter("abe");
+            //DFAbuilder db = rnc.RegexToNFA(final);
 
-            Regex bora = b.or(a);
-            DFAbuilder secondbuilder = rnc.RegexToNFA(aorb);
-            NFAToDFAConverter nfacsecond = new NFAToDFAConverter();
-            DFAbuilder nfa2 = nfacsecond.NFAToDFA(firstbuilder);
+            //////Generate DFAbuilders that start, end, or contain their paramater Regex
+            //string alphabet = "abe"; // 
+            ////DFAbuilder startswitha = new DFAbuilder(alphabet).createDFAStartsWith(new Regex('a'));
+            ////DFAbuilder endswitha = new DFAbuilder(alphabet).createDFAEndsWith(new Regex('a'));
+            //DFAbuilder containsa = new DFAbuilder(alphabet).createDFAContains(new Regex('a'));
 
-            Graphbuilder g2 = new Graphbuilder(nfa2, "nfa2");
-            await g2.createGraph();
+            ////NFA to DFA
+            //NFAToDFAConverter nfac = new NFAToDFAConverter();
+            //DFAbuilder nfa = nfac.NFAToDFA(db);
 
-            if ((nfa1.createDFA()).isIdentical(nfa2.createDFA()))
-            {
-                Console.WriteLine("Identical");
-            }
-            else 
-            {
-                Console.WriteLine("Not identical");
-            }
+            //////Generate graph
+            //Graphbuilder g = new Graphbuilder(nfa, "complex");
+            //await g.createGraph();
+
+            ////Are these two dfa identical?
+            //Regex aorb = a.or(b);
+            //DFAbuilder firstbuilder = rnc.RegexToNFA(aorb);
+            //NFAToDFAConverter nfacfirst = new NFAToDFAConverter();
+            //DFAbuilder nfa1 = nfacfirst.NFAToDFA(firstbuilder);
+
+            ////Graphbuilder g1 = new Graphbuilder(nfa1,"nfa1");
+            ////await g1.createGraph();
+
+            //Regex bora = b.or(a);
+            //DFAbuilder secondbuilder = rnc.RegexToNFA(aorb);
+            //NFAToDFAConverter nfacsecond = new NFAToDFAConverter();
+            //DFAbuilder nfa2 = nfacsecond.NFAToDFA(firstbuilder);
+
+            ////Graphbuilder g2 = new Graphbuilder(nfa2, "nfa2");
+            ////await g2.createGraph();
+
+            //if ((nfa1.createDFA()).isIdentical(nfa2.createDFA()))
+            //{
+            //    Console.WriteLine("Identical");
+            //}
+            //else 
+            //{
+            //    Console.WriteLine("Not identical");
+            //}
 
 
             ////generate whole language from alphabet
@@ -80,15 +101,7 @@ namespace FormeleMethodenEindproject
             //IEnumerable<string> nonValidWords = RegexLogic.generateNonValidWords(final, "ab", 5);
             //Console.WriteLine("All non-valid words:");
             //printStrings(nonValidWords);
-        }
-
-        private static void printStrings(IEnumerable<string> strings)
-        {
-            foreach (var item in strings)
-            {
-                Console.WriteLine(item);
-            }
-            Console.WriteLine("Amount of words: " + strings.Count() + "\n");
+            #endregion
         }
     }
 }
