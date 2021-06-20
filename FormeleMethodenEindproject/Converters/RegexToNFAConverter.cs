@@ -9,9 +9,11 @@ namespace FormeleMethodenEindproject.Converters
     {
         
         public DFAbuilder _dfabuilder;
+        public string alphabet;
 
-        public RegexToNFAConverter()
+        public RegexToNFAConverter(string alphabet)
         {
+            this.alphabet = alphabet;
             resetDFABuilder();   
         }
 
@@ -19,7 +21,7 @@ namespace FormeleMethodenEindproject.Converters
         public void resetDFABuilder()
         {
             //TODO: alphabet aanpassen
-            this._dfabuilder =  new DFAbuilder("abe"); // e = epsilon
+            this._dfabuilder =  new DFAbuilder(this.alphabet); // e = epsilon
             this._dfabuilder.addNode(true,false,0);
         }
 
@@ -115,7 +117,7 @@ namespace FormeleMethodenEindproject.Converters
                     this._dfabuilder.addNode(false, false, _dfabuilder.LastNodeID + 1);
                     _dfabuilder.addTransition(_dfabuilder.LastNodeID - 1, _dfabuilder.LastNodeID, 'e');
                     int st0 = _dfabuilder.LastNodeID; // 2
-                    //Console.WriteLine("st0: " +  st0);
+                    //Console.WriteLine("st0: " + st0);
                     RegexToNFARecursive(regex.left);
                     if (regex.left.op == Regex.Operator.ONE)
                     {

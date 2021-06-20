@@ -13,29 +13,30 @@ namespace FormeleMethodenEindproject
     {
         static async Task Main(string[] args)
         {
-            //regex used: ab+ba
             Regex a = new Regex('a');
             Regex b = new Regex('b');
             Regex ab = a.dot(b);
             Regex ba = b.dot(a);
-            Regex aborba = ab.or(ba);
-            Regex abba = ab.dot(ba);
-            Regex complex = (abba.star()).or(aborba);
 
-            Regex final = complex;
+            Regex final = a.dot(b);
 
             //Regex to NFA
-            RegexToNFAConverter rnc = new RegexToNFAConverter();
+            RegexToNFAConverter rnc = new RegexToNFAConverter("abe");
             DFAbuilder db = rnc.RegexToNFA(final);
 
+            //Generate DFAbuilders that start, end, or contain their paramater Regex
+            string alphabet = "abe"; // 
+            DFAbuilder startswitha = new DFAbuilder(alphabet).createDFAStartsWith(new Regex('a'));
+            DFAbuilder endswitha = new DFAbuilder(alphabet).createDFAEndsWith(new Regex('a'));
+            DFAbuilder containsa = new DFAbuilder(alphabet).createDFAContains(new Regex('a'));
+
             //NFA to DFA
-            NFAToDFAConverter nfac = new NFAToDFAConverter("ab", db);
+            NFAToDFAConverter nfac = new NFAToDFAConverter(db);
             DFAbuilder nfa = nfac.NFAToDFA();
 
             //Generate graph
-            Graphbuilder g = new Graphbuilder(nfa);
+            Graphbuilder g = new Graphbuilder(db);
             await g.createGraph();
-
 
             ////generate whole language from alphabet
             //Console.WriteLine("All possible words:");
@@ -45,16 +46,14 @@ namespace FormeleMethodenEindproject
 
             ////generate all valid words from alphabet and regex
             //Console.WriteLine("All valid words:");
-            //IEnumerable<string> validWords = RegexLogic.regexToLanguage(final, 5);
+            //IEnumerable<string> validWords = RegexLogic.regexToLanguage(final, 8);
             //printStrings(validWords);
-
 
             ////generate all nonvalid words from alphabet and regex
             //IEnumerable<string> nonValidWords = RegexLogic.generateNonValidWords(final, "ab", 5);
             //Console.WriteLine("All non-valid words:");
             //printStrings(nonValidWords);
-
-        }   
+        }
 
         private static void printStrings(IEnumerable<string> strings)
         {

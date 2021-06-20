@@ -37,7 +37,7 @@ namespace FormeleMethodenEindproject.Graphviz
 
             dfa.getTransitions().ForEach(t => {
                 string line = "\"" + dfa.getNodeFromId(t.Origin).Name + "\" -> \"" + dfa.getNodeFromId(t.Dest).Name + "\"";
-                if (t.Symbol.Equals("e"))
+                if (t.Symbol.Equals('e'))
                     line += "[label=\"ε\"]";
                 else
                     line += "[label=\"" + t.Symbol + "\"]";
