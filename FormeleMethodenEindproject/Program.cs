@@ -31,12 +31,39 @@ namespace FormeleMethodenEindproject
             DFAbuilder containsa = new DFAbuilder(alphabet).createDFAContains(new Regex('a'));
 
             //NFA to DFA
-            NFAToDFAConverter nfac = new NFAToDFAConverter(db);
-            DFAbuilder nfa = nfac.NFAToDFA();
+            NFAToDFAConverter nfac = new NFAToDFAConverter();
+            DFAbuilder nfa = nfac.NFAToDFA(db);
 
             //Generate graph
-            Graphbuilder g = new Graphbuilder(db);
+            Graphbuilder g = new Graphbuilder(db, "test");
             await g.createGraph();
+
+            //Are these two dfa identical?
+            Regex aorb = a.or(b);
+            DFAbuilder firstbuilder = rnc.RegexToNFA(aorb);
+            NFAToDFAConverter nfacfirst = new NFAToDFAConverter();
+            DFAbuilder nfa1 = nfacfirst.NFAToDFA(firstbuilder);
+
+            Graphbuilder g1 = new Graphbuilder(nfa1,"nfa1");
+            await g1.createGraph();
+
+            Regex bora = b.or(a);
+            DFAbuilder secondbuilder = rnc.RegexToNFA(aorb);
+            NFAToDFAConverter nfacsecond = new NFAToDFAConverter();
+            DFAbuilder nfa2 = nfacsecond.NFAToDFA(firstbuilder);
+
+            Graphbuilder g2 = new Graphbuilder(nfa2, "nfa2");
+            await g2.createGraph();
+
+            if ((nfa1.createDFA()).isIdentical(nfa2.createDFA()))
+            {
+                Console.WriteLine("Identical");
+            }
+            else 
+            {
+                Console.WriteLine("Not identical");
+            }
+
 
             ////generate whole language from alphabet
             //Console.WriteLine("All possible words:");

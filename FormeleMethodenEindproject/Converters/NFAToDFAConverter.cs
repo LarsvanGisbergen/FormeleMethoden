@@ -11,13 +11,13 @@ namespace FormeleMethodenEindproject.Converters
         public DFAbuilder nfa;
         private HashSet<int> recList = new HashSet<int>();
 
-        public NFAToDFAConverter(DFAbuilder nfa)
+        public NFAToDFAConverter()
         {
-            this._dfabuilder = new DFAbuilder(nfa.getAlphabetAsString()); // e = epsilon
-            this.nfa = nfa;
         }
 
-        public DFAbuilder NFAToDFA() {
+        public DFAbuilder NFAToDFA(DFAbuilder nfa) {
+            this._dfabuilder = new DFAbuilder(nfa.getAlphabetAsString()); // e = epsilon
+            this.nfa = nfa;
             //Generate original transition table
             List<List<string>> ortable = generateOriginalTable();
 

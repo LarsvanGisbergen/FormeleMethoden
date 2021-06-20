@@ -14,14 +14,14 @@ namespace FormeleMethodenEindproject.Converters
         public RegexToNFAConverter(string alphabet)
         {
             this.alphabet = alphabet;
+            this._dfabuilder = new DFAbuilder(alphabet);
             resetDFABuilder();   
         }
 
         
         public void resetDFABuilder()
         {
-            //TODO: alphabet aanpassen
-            this._dfabuilder =  new DFAbuilder(this.alphabet); // e = epsilon
+            this._dfabuilder.resetBuilder();
             this._dfabuilder.addNode(true,false,0);
         }
 
