@@ -10,6 +10,7 @@ namespace FormeleMethodenEindproject
         private bool begin;
         private bool end;
         private int id;
+        private string name;
 
        
         public Node(bool begin, bool end, int id)
@@ -17,11 +18,17 @@ namespace FormeleMethodenEindproject
             this.begin = begin;
             this.end = end;
             this.id = id;
+            this.name = "" + id;
         }
 
-        
+        public Node(bool begin, bool end, int id, string name) : this(begin, end, id)
+        {
+            this.name = name;
+        }
+
         public bool Begin { get => begin;}
         public bool End { get => end; }
         public int Id { get => id; }
+        public string Name { get => name; }
     }
 }

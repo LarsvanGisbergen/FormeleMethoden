@@ -46,6 +46,20 @@ namespace FormeleMethodenEindproject
             return true;
         }
 
+        public bool addNode(bool begin, bool end, int id, string name)
+        {
+            foreach (Node node in nodes)
+            {
+                if (node.Id == id)
+                {
+                    return false;
+                }
+            }
+            nodes.Add(new Node(begin, end, id, name));
+            this.lastNodeID++;
+            return true;
+        }
+
         public bool addTransition(int origin, int dest, char symbol)
         {
             if(!(Array.IndexOf(alphabet,symbol) > -1))
@@ -179,6 +193,10 @@ namespace FormeleMethodenEindproject
             return nodes;
         }
 
+        public List<Transition> getTransitions() {
+            return transitions;
+        }
+
         public Node getNodeFromId(int id) {
             return nodes.Find(n =>
             {
@@ -188,6 +206,10 @@ namespace FormeleMethodenEindproject
 
         public char[] getAlphabet() {
             return alphabet;
+        }
+        public string getAlphabetAsString()
+        {
+            return alphabet_as_string;
         }
         public override string ToString()
         {
@@ -219,10 +241,16 @@ namespace FormeleMethodenEindproject
             Console.WriteLine("nodes:");
             foreach (Node n in this.nodes)
             {
-                Console.WriteLine("begin: " + n.Begin + " end: " + n.End + " id: " + n.Id);
+                Console.WriteLine("begin: " + n.Begin + " end: " + n.End + " id: " + n.Id + " name: " + n.Name);
             }
         }
-
+        public List<Node> getBeginNodes()
+        {
+            return nodes.Where(x => x.Begin).ToList();
+        }
+        public List<Node> getEndNodes() {
+            return nodes.Where(x => x.End).ToList();
+        }
         
     }
 }
